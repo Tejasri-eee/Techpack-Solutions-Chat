@@ -9,7 +9,6 @@ import * as zod from 'zod';
 
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -17,25 +16,19 @@ export const HealthCheckResponse = zod.object({
 })
 
 
-/**
- * @summary Send a chat message to the AI assistant
- */
 export const SendMessageBody = zod.object({
-  "message": zod.string().describe('The user\'s message'),
+  "message": zod.string(),
   "conversationHistory": zod.array(zod.object({
   "role": zod.enum(['user', 'assistant']),
   "content": zod.string()
-})).describe('Previous messages in the conversation')
+}))
 })
 
 export const SendMessageResponse = zod.object({
-  "reply": zod.string().describe('AI assistant reply')
+  "reply": zod.string()
 })
 
 
-/**
- * @summary Capture a customer lead
- */
 export const CaptureLeadBody = zod.object({
   "name": zod.string(),
   "phone": zod.string(),
@@ -44,9 +37,6 @@ export const CaptureLeadBody = zod.object({
 })
 
 
-/**
- * @summary Get all captured leads
- */
 export const GetLeadsResponseItem = zod.object({
   "id": zod.number(),
   "name": zod.string(),
@@ -56,5 +46,108 @@ export const GetLeadsResponseItem = zod.object({
   "createdAt": zod.coerce.date()
 })
 export const GetLeadsResponse = zod.array(GetLeadsResponseItem)
+
+
+/**
+ * @summary Get all active products
+ */
+export const GetProductsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "category": zod.string().nullish(),
+  "tag": zod.string().nullish(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const GetProductsResponse = zod.array(GetProductsResponseItem)
+
+
+export const CreateProductBody = zod.object({
+  "name": zod.string(),
+  "description": zod.string(),
+  "category": zod.string().nullish(),
+  "tag": zod.string().nullish(),
+  "isActive": zod.boolean().optional()
+})
+
+
+export const UpdateProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateProductBody = zod.object({
+  "name": zod.string(),
+  "description": zod.string(),
+  "category": zod.string().nullish(),
+  "tag": zod.string().nullish(),
+  "isActive": zod.boolean().optional()
+})
+
+export const UpdateProductResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "category": zod.string().nullish(),
+  "tag": zod.string().nullish(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+export const DeleteProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary Submit a quote request
+ */
+export const CreateOrderBody = zod.object({
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "location": zod.string(),
+  "productName": zod.string(),
+  "quantity": zod.string().nullish(),
+  "notes": zod.string().nullish()
+})
+
+
+/**
+ * @summary Get all orders
+ */
+export const GetOrdersResponseItem = zod.object({
+  "id": zod.number(),
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "location": zod.string(),
+  "productName": zod.string(),
+  "quantity": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "status": zod.enum(['new', 'contacted', 'quoted', 'closed']),
+  "createdAt": zod.coerce.date()
+})
+export const GetOrdersResponse = zod.array(GetOrdersResponseItem)
+
+
+export const UpdateOrderStatusParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateOrderStatusBody = zod.object({
+  "status": zod.enum(['new', 'contacted', 'quoted', 'closed'])
+})
+
+export const UpdateOrderStatusResponse = zod.object({
+  "id": zod.number(),
+  "customerName": zod.string(),
+  "phone": zod.string(),
+  "location": zod.string(),
+  "productName": zod.string(),
+  "quantity": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "status": zod.enum(['new', 'contacted', 'quoted', 'closed']),
+  "createdAt": zod.coerce.date()
+})
 
 

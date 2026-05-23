@@ -1,39 +1,14 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { useGetProducts } from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
 
-export function Products() {
-  const products = [
-    {
-      name: "Pouch Packing Material",
-      desc: "High-speed vertical form fill seal for granules, powders, and liquids.",
-      tag: "Top Seller"
-    },
-    {
-      name: "Form Fill Seal",
-      desc: "Heavy-duty continuous motion packaging for industrial output.",
-      tag: "High Volume"
-    },
-    {
-      name: "Shrink Wrap Machine",
-      desc: "Precision thermal wrapping for secure secondary packaging.",
-      tag: ""
-    },
-    {
-      name: "Vacuum Packing",
-      desc: "Industrial-grade vacuum sealing for food and sensitive components.",
-      tag: ""
-    },
-    {
-      name: "Multi-head Weigher",
-      desc: "Ultra-precise digital weighing systems integration.",
-      tag: "High Precision"
-    },
-    {
-      name: "Conveyor Systems",
-      desc: "Custom modular belts for seamless production line flow.",
-      tag: ""
-    }
-  ];
+interface ProductsProps {
+  onQuoteClick?: (productName: string) => void;
+}
+
+export function Products({ onQuoteClick }: ProductsProps) {
+  const { data: products = [], isLoading } = useGetProducts();
 
   return (
     <section id="products" className="py-24 bg-card/30 border-y border-border">
@@ -61,31 +36,51 @@ export function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group cursor-pointer"
-            >
-              <div className="bg-background border border-border p-6 rounded-xl h-full flex flex-col hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.05)] relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                  <ArrowUpRight className="w-5 h-5 text-primary" />
-                </div>
-                
-                {product.tag && (
-                  <div className="self-start px-2.5 py-1 rounded bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-4 border border-primary/20">
-                    {product.tag}
-                  </div>
-                )}
-                
-                <h3 className="text-xl font-bold text-white mb-2 mt-auto pt-8">{product.name}</h3>
-                <p className="text-muted-foreground">{product.desc}</p>
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-background border border-border p-6 rounded-xl h-64 flex flex-col relative overflow-hidden animate-pulse">
+                <div className="h-6 w-24 bg-border/50 rounded mb-auto"></div>
+                <div className="h-6 w-3/4 bg-border/50 rounded mt-auto mb-2"></div>
+                <div className="h-4 w-full bg-border/50 rounded"></div>
+                <div className="h-10 w-full bg-border/50 rounded mt-4"></div>
               </div>
-            </motion.div>
-          ))}
+            ))
+          ) : (
+            products.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group flex flex-col h-full"
+              >
+                <div className="bg-background border border-border p-6 rounded-xl h-full flex flex-col hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.05)] relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                    <ArrowUpRight className="w-5 h-5 text-primary" />
+                  </div>
+                  
+                  {product.tag && (
+                    <div className="self-start px-2.5 py-1 rounded bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-4 border border-primary/20">
+                      {product.tag}
+                    </div>
+                  )}
+                  
+                  <h3 className="text-xl font-bold text-white mb-2 mt-auto pt-8">{product.name}</h3>
+                  <p className="text-muted-foreground flex-grow mb-6">{product.description}</p>
+
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-primary/20 text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+                    onClick={() => onQuoteClick?.(product.name)}
+                    data-testid={`btn-request-quote-${product.id}`}
+                  >
+                    Request Quote
+                  </Button>
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </section>

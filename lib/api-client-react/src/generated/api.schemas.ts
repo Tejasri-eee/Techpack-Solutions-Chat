@@ -23,14 +23,11 @@ export interface ConversationMessage {
 }
 
 export interface ChatMessageInput {
-  /** The user's message */
   message: string;
-  /** Previous messages in the conversation */
   conversationHistory: ConversationMessage[];
 }
 
 export interface ChatResponse {
-  /** AI assistant reply */
   reply: string;
 }
 
@@ -50,5 +47,76 @@ export interface Lead {
   /** @nullable */
   notes?: string | null;
   createdAt: string;
+}
+
+export interface ProductInput {
+  name: string;
+  description: string;
+  /** @nullable */
+  category?: string | null;
+  /** @nullable */
+  tag?: string | null;
+  isActive?: boolean;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  /** @nullable */
+  category?: string | null;
+  /** @nullable */
+  tag?: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface OrderInput {
+  customerName: string;
+  phone: string;
+  location: string;
+  productName: string;
+  /** @nullable */
+  quantity?: string | null;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+export const OrderStatus = {
+  new: 'new',
+  contacted: 'contacted',
+  quoted: 'quoted',
+  closed: 'closed',
+} as const;
+
+export interface Order {
+  id: number;
+  customerName: string;
+  phone: string;
+  location: string;
+  productName: string;
+  /** @nullable */
+  quantity?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  status: OrderStatus;
+  createdAt: string;
+}
+
+export type OrderStatusUpdateStatus = typeof OrderStatusUpdateStatus[keyof typeof OrderStatusUpdateStatus];
+
+
+export const OrderStatusUpdateStatus = {
+  new: 'new',
+  contacted: 'contacted',
+  quoted: 'quoted',
+  closed: 'closed',
+} as const;
+
+export interface OrderStatusUpdate {
+  status: OrderStatusUpdateStatus;
 }
 

@@ -8,8 +8,6 @@
 import type { ConversationMessage } from './conversationMessage';
 
 export interface ChatMessageInput {
-  /** The user's message */
   message: string;
-  /** Previous messages in the conversation */
   conversationHistory: ConversationMessage[];
 }

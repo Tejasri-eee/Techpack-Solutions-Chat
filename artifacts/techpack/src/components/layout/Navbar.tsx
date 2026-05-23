@@ -3,7 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Box } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function Navbar() {
+interface NavbarProps {
+  onQuoteClick?: () => void;
+}
+
+export function Navbar({ onQuoteClick }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -57,7 +61,7 @@ export function Navbar() {
 
         <div className="flex items-center">
           <Button 
-            onClick={() => scrollTo("contact")}
+            onClick={onQuoteClick ? onQuoteClick : () => scrollTo("contact")}
             className="hidden md:flex font-semibold shadow-[0_0_15px_rgba(0,255,255,0.3)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] transition-shadow"
             data-testid="btn-nav-quote"
           >

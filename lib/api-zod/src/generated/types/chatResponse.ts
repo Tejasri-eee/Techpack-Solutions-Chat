@@ -7,6 +7,5 @@
  */
 
 export interface ChatResponse {
-  /** AI assistant reply */
   reply: string;
 }
