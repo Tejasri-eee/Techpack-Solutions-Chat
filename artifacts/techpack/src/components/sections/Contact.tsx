@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useCaptureLead } from "@workspace/api-client-react";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { useCaptureLead, useGetContacts } from "@workspace/api-client-react";
+import { Mail, Phone, MapPin, Send, User, Briefcase } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -21,50 +20,49 @@ const formSchema = z.object({
 export function Contact() {
   const { toast } = useToast();
   const captureLead = useCaptureLead();
+  const { data: contacts = [] } = useGetContacts();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", phone: "", message: "" },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    captureLead.mutate({
-      data: {
-        name: values.name,
-        phone: values.phone,
-        location: values.email, // using email as location field placeholder for this simple form
-        notes: values.message,
-      }
-    }, {
-      onSuccess: () => {
-        toast({
-          title: "Request Sent Successfully",
-          description: "Our sales team will contact you shortly.",
-        });
-        form.reset();
+    captureLead.mutate(
+      {
+        data: {
+          name: values.name,
+          phone: values.phone,
+          location: values.email,
+          notes: values.message,
+        },
       },
-      onError: () => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to send request. Please try again.",
-        });
+      {
+        onSuccess: () => {
+          toast({
+            title: "Request Sent Successfully",
+            description: "Our sales team will contact you shortly.",
+          });
+          form.reset();
+        },
+        onError: () => {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to send request. Please try again.",
+          });
+        },
       }
-    });
+    );
   }
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
-      {/* Background glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          {/* Left — static info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -105,12 +103,17 @@ export function Contact() {
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1">Headquarters</h4>
-                  <p className="text-muted-foreground">123 Industrial Estate, Phase II<br/>Mumbai, Maharashtra 400001</p>
+                  <p className="text-muted-foreground">
+                    123 Industrial Estate, Phase II
+                    <br />
+                    Mumbai, Maharashtra 400001
+                  </p>
                 </div>
               </div>
             </div>
           </motion.div>
 
+          {/* Right — quote form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -133,7 +136,7 @@ export function Contact() {
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -170,10 +173,10 @@ export function Contact() {
                     <FormItem>
                       <FormLabel>Requirements / Specifications</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Tell us about the product you pack, speed required, etc." 
-                          className="min-h-[120px] bg-background resize-none" 
-                          {...field} 
+                        <Textarea
+                          placeholder="Tell us about the product you pack, speed required, etc."
+                          className="min-h-[120px] bg-background resize-none"
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -181,8 +184,8 @@ export function Contact() {
                   )}
                 />
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full mt-4 font-semibold text-base gap-2"
                   disabled={captureLead.isPending}
                 >
@@ -193,6 +196,77 @@ export function Contact() {
             </Form>
           </motion.div>
         </div>
+
+        {/* ── Company Contacts (read-only, public) ─────────────────────────── */}
+        {contacts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-20"
+          >
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold text-white">
+                Our <span className="text-primary">Team.</span>
+              </h3>
+              <p className="text-muted-foreground mt-2">
+                Reach our specialists directly for faster assistance.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {contacts.map((contact, i) => (
+                <motion.div
+                  key={contact.id}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                  className="bg-card border border-border rounded-xl p-5 hover:border-primary/30 transition-colors"
+                >
+                  {/* Avatar + name */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-white font-semibold truncate">{contact.name}</p>
+                      <p className="text-primary text-xs flex items-center gap-1">
+                        <Briefcase className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{contact.role}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <a
+                      href={`tel:${contact.phone}`}
+                      className="flex items-center gap-2 text-muted-foreground hover:text-cyan-400 transition-colors"
+                    >
+                      <Phone className="w-3.5 h-3.5 shrink-0 text-primary/60" />
+                      <span className="truncate">{contact.phone}</span>
+                    </a>
+
+                    {contact.email && (
+                      <a
+                        href={`mailto:${contact.email}`}
+                        className="flex items-center gap-2 text-muted-foreground hover:text-cyan-400 transition-colors"
+                      >
+                        <Mail className="w-3.5 h-3.5 shrink-0 text-primary/60" />
+                        <span className="truncate">{contact.email}</span>
+                      </a>
+                    )}
+
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="w-3.5 h-3.5 shrink-0 text-primary/60" />
+                      <span className="truncate">{contact.location}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );

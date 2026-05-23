@@ -130,6 +130,22 @@ export const GetOrdersResponseItem = zod.object({
 export const GetOrdersResponse = zod.array(GetOrdersResponseItem)
 
 
+/**
+ * @summary Get all active company contacts (public, read-only)
+ */
+export const GetContactsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "role": zod.string(),
+  "phone": zod.string(),
+  "email": zod.string().nullish(),
+  "location": zod.string(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const GetContactsResponse = zod.array(GetContactsResponseItem)
+
+
 export const UpdateOrderStatusParams = zod.object({
   "id": zod.coerce.number()
 })

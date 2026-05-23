@@ -22,7 +22,9 @@ export default function AdminLogin() {
       });
 
       if (res.ok) {
+        const data = await res.json() as { success: boolean; token: string };
         sessionStorage.setItem("tp_admin_auth", "1");
+        sessionStorage.setItem("tp_admin_token", data.token);
         setLocation("/admin/dashboard");
       } else {
         const data = await res.json() as { error?: string };

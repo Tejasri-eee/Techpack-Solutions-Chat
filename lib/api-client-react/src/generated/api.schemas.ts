@@ -120,3 +120,15 @@ export interface OrderStatusUpdate {
   status: OrderStatusUpdateStatus;
 }
 
+export interface Contact {
+  id: number;
+  name: string;
+  role: string;
+  phone: string;
+  /** @nullable */
+  email?: string | null;
+  location: string;
+  isActive: boolean;
+  createdAt: string;
+}
+

@@ -13,6 +13,7 @@ tags:
   - name: leads
   - name: products
   - name: orders
+  - name: contacts
 paths:
   /healthz:
     get:
@@ -173,6 +174,21 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Order"
+
+  /contacts:
+    get:
+      operationId: getContacts
+      tags: [contacts]
+      summary: Get all active company contacts (public, read-only)
+      responses:
+        "200":
+          description: List of active contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Contact"
 
   /orders/{id}/status:
     patch:
@@ -350,3 +366,25 @@ components:
         status:
           type: string
           enum: [new, contacted, quoted, closed]
+
+    Contact:
+      type: object
+      required: [id, name, role, phone, location, isActive, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        role:
+          type: string
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        location:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
