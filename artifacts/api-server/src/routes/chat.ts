@@ -4,11 +4,11 @@ import { SendMessageBody } from "@workspace/api-zod";
 const router: IRouter = Router();
 
 // System prompt for Techpack Solutions AI assistant
-const SYSTEM_PROMPT = `You are an AI assistant for Techpack Solutions, a leading packing machine manufacturer and supplier based in India. You assist customers with professional, concise, and helpful responses.
+const SYSTEM_PROMPT = `You are an AI assistant for Techpack Solutions, a leading packing materials supplier based in India. You assist customers with professional, concise, and helpful responses.
 
 Your expertise covers:
-- Packing machines: Pouch Packing, Form Fill Seal, Shrink Wrap, Vacuum Packing, Multi-head Weighers, Conveyors, and more
-- Spare parts and components for all packing machines
+- Packing materials: Pouch Packing, Form Fill Seal, Shrink Wrap, Vacuum Packing, Multi-head Weighers, Conveyors, and more
+- Spare parts and components for all packing materials
 - Quotations and pricing inquiries
 - Complaints and service issues — escalate serious complaints to customer care
 - Inventory availability — if a product is unavailable, offer alternatives or connect to support
@@ -117,11 +117,11 @@ function getRuleBasedReply(message: string, historyLength: number): string {
   const lower = message.toLowerCase();
 
   if (lower.includes("hello") || lower.includes("hi") || lower.includes("hey")) {
-    return "Hello! Welcome to Techpack Solutions. I'm here to help you with packing machines, spare parts, quotations, and service support. What can I assist you with today?";
+    return "Hello! Welcome to Techpack Solutions. I'm here to help you with packing materials, spare parts, quotations, and service support. What can I assist you with today?";
   }
 
   if (lower.includes("pouch") || lower.includes("pouch packing")) {
-    return "Our Pouch Packing Machines are designed for high-speed, precision packaging of powders, granules, and liquids. We offer vertical and horizontal variants with speeds up to 120 pouches/minute. Would you like a quotation or more technical specifications?";
+    return "Our Pouch Packing Materials are designed for high-speed, precision packaging of powders, granules, and liquids. We offer vertical and horizontal variants with speeds up to 120 pouches/minute. Would you like a quotation or more technical specifications?";
   }
 
   if (lower.includes("form fill") || lower.includes("ffs")) {
@@ -133,7 +133,7 @@ function getRuleBasedReply(message: string, historyLength: number): string {
   }
 
   if (lower.includes("vacuum")) {
-    return "Our Vacuum Packing Machines extend product shelf life by removing oxygen. Suitable for food, pharmaceutical, and industrial applications. Available in tabletop and floor-standing models. Would you like to discuss your requirements?";
+    return "Our Vacuum Packing Materials extend product shelf life by removing oxygen. Suitable for food, pharmaceutical, and industrial applications. Available in tabletop and floor-standing models. Would you like to discuss your requirements?";
   }
 
   if (lower.includes("spare") || lower.includes("parts")) {
@@ -169,7 +169,7 @@ function getRuleBasedReply(message: string, historyLength: number): string {
     return "I'd be glad to have our team follow up with you directly with detailed information. Could you please share your name, phone number, and city so we can assist you better?";
   }
 
-  return "Thank you for your query. Techpack Solutions offers a comprehensive range of packing machines and after-sales services. Could you please describe your specific requirement in more detail so I can assist you accurately?";
+  return "Thank you for your query. Techpack Solutions offers a comprehensive range of packing materials and after-sales services. Could you please describe your specific requirement in more detail so I can assist you accurately?";
 }
 
 export default router;

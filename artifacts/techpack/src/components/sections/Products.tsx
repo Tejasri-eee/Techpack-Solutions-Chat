@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 export function Products() {
   const products = [
     {
-      name: "Pouch Packing Machine",
+      name: "Pouch Packing Material",
       desc: "High-speed vertical form fill seal for granules, powders, and liquids.",
       tag: "Top Seller"
     },

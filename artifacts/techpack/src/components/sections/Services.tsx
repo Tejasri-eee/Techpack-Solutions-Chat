@@ -5,7 +5,7 @@ export function Services() {
   const services = [
     {
       title: "Machine Supply",
-      description: "Turnkey delivery of world-class packing machinery configured for your specific production line.",
+      description: "Turnkey delivery of world-class packing materials configured for your specific production line.",
       icon: Factory
     },
     {

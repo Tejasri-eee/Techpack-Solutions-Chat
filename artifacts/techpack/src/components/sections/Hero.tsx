@@ -26,11 +26,11 @@ export function Hero() {
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
             Next-Generation <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
-              Packing Systems.
+              Packing Materials.
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl leading-relaxed">
-            World-class industrial packing machinery designed for extreme reliability, throughput, and precision. We empower India's leading manufacturers to scale faster.
+            World-class industrial packing materials designed for extreme reliability, throughput, and precision. We empower India's leading manufacturers to scale faster.
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <Button 

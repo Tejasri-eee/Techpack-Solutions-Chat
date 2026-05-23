@@ -31,10 +31,10 @@ export function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4">Products</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>Pouch Packing Machines</li>
-            <li>Form Fill Seal Machines</li>
-            <li>Shrink Wrap Machines</li>
-            <li>Vacuum Packing Machines</li>
+            <li>Pouch Packing Materials</li>
+            <li>Form Fill Seal Materials</li>
+            <li>Shrink Wrap Materials</li>
+            <li>Vacuum Packing Materials</li>
           </ul>
         </div>
 
