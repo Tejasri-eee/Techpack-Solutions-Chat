@@ -39,6 +39,31 @@ interface ProductFormState {
 
 const emptyForm: ProductFormState = { name: "", description: "", category: "", tag: "" };
 
+function ProductFormFields({ form, setForm }: { form: ProductFormState; setForm: (f: ProductFormState) => void }) {
+  return (
+    <div className="space-y-4 pt-2">
+      <div className="space-y-2">
+        <Label>Product Name *</Label>
+        <Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="bg-[#0a1220] border-slate-700" placeholder="e.g. Stretch Film Roll" />
+      </div>
+      <div className="space-y-2">
+        <Label>Description *</Label>
+        <Textarea required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="bg-[#0a1220] border-slate-700 resize-none" rows={3} placeholder="Short product description" />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="bg-[#0a1220] border-slate-700" placeholder="e.g. Films" />
+        </div>
+        <div className="space-y-2">
+          <Label>Tag</Label>
+          <Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="bg-[#0a1220] border-slate-700" placeholder="e.g. Top Seller" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleString("en-IN", {
     day: "2-digit", month: "short", year: "numeric",
@@ -192,28 +217,7 @@ export default function AdminDashboard() {
       ? sortDir === "asc" ? <ChevronUp className="w-3 h-3 inline ml-1 text-cyan-400" /> : <ChevronDown className="w-3 h-3 inline ml-1 text-cyan-400" />
       : <ChevronDown className="w-3 h-3 inline ml-1 text-slate-600" />;
 
-  const ProductFormFields = ({ form, setForm }: { form: ProductFormState; setForm: (f: ProductFormState) => void }) => (
-    <div className="space-y-4 pt-2">
-      <div className="space-y-2">
-        <Label>Product Name *</Label>
-        <Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="bg-[#0a1220] border-slate-700" placeholder="e.g. Stretch Film Roll" />
-      </div>
-      <div className="space-y-2">
-        <Label>Description *</Label>
-        <Textarea required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="bg-[#0a1220] border-slate-700 resize-none" rows={3} placeholder="Short product description" />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Category</Label>
-          <Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="bg-[#0a1220] border-slate-700" placeholder="e.g. Films" />
-        </div>
-        <div className="space-y-2">
-          <Label>Tag</Label>
-          <Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="bg-[#0a1220] border-slate-700" placeholder="e.g. Top Seller" />
-        </div>
-      </div>
-    </div>
-  );
+
 
   return (
     <div className="min-h-screen bg-[#080e1a] text-white">
