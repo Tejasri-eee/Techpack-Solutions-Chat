@@ -1,0 +1,88 @@
+Build a complete production-ready system for Techpack Solutions with separate User and Admin functionality.
+
+USER SIDE REQUIREMENTS:
+
+* Users should only be able to:
+  • View available packing materials and products
+  • Search products
+  • Request quotations
+  • Place orders
+  • Chat with AI assistant
+
+* Users should NOT be able to:
+  • Access admin dashboard
+  • Add products
+  • Edit products
+  • Delete products
+  • View other customer orders
+
+ORDER FLOW:
+
+* When a user clicks "Order" or "Request Quote":
+  Ask for:
+  • Name
+  • Phone Number
+  • Location
+
+* Save all orders and leads in the database
+
+* Show success confirmation after submission
+
+CHATBOT REQUIREMENTS:
+
+* Floating AI chatbot on bottom right
+* Modern professional UI
+* Typing animation
+* Responsive design
+* Groq/OpenRouter API integration
+* Welcome message:
+  "Hi 👋 Welcome to Techpack Solutions. How can I help you today?"
+
+Chatbot Rules:
+
+* Help customers regarding packing materials, quotations, inventory, complaints, and support
+* Keep replies short, professional, and friendly
+* Never repeat the same question again and again
+* Before ending important conversations ask:
+  • Name
+  • Phone Number
+  • Location
+
+ADMIN SIDE REQUIREMENTS:
+
+* Secure admin login system
+* Session-based authentication
+* Store admin password securely using environment variables
+* Unauthorized users should not access /admin
+
+ONLY ADMINS CAN:
+
+* Add products
+* Edit products
+* Delete products
+* View customer orders
+* View leads
+* Export leads/orders to CSV
+* Manage product availability
+
+ADMIN DASHBOARD FEATURES:
+
+* Dashboard statistics
+* Orders table
+* Leads table
+* Search and sorting
+* CSV export
+* Product management section
+* Logout button
+
+TECHNICAL REQUIREMENTS:
+
+* Frontend: React
+* Backend: Node.js + Express
+* Database integration
+* Responsive modern UI
+* Production-ready folder structure
+* Secure API routes
+* Clean code with comments
+
+Make the entire system secure, modern, professional, and ready for deployment.

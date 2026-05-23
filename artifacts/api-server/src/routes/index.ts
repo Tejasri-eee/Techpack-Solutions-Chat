@@ -4,6 +4,7 @@ import chatRouter from "./chat";
 import leadsRouter from "./leads";
 import productsRouter from "./products";
 import ordersRouter from "./orders";
+import adminRouter from "./admin";
 
 const router: IRouter = Router();
 
