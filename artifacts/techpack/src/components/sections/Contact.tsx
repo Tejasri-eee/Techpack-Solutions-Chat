@@ -82,7 +82,7 @@ export function Contact() {
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1">Call Us Directly</h4>
-                  <p className="text-muted-foreground">+91 98765 43210</p>
+                  <p className="text-muted-foreground">+91 9505341122</p>
                   <p className="text-muted-foreground text-sm">Mon-Sat, 9:00 AM - 6:00 PM</p>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export function Contact() {
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1">Email Sales</h4>
-                  <p className="text-muted-foreground">sales@techpacksolutions.in</p>
+                  <p className="text-muted-foreground">rajesh.k@techpacksolutions.co.in</p>
                 </div>
               </div>
 
