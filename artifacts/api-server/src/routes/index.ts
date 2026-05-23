@@ -8,6 +8,7 @@ import adminRouter from "./admin";
 
 const router: IRouter = Router();
 
+router.use(adminRouter);
 router.use(healthRouter);
 router.use(chatRouter);
 router.use(leadsRouter);
