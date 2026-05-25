@@ -1,7 +1,8 @@
 import { Box, Phone, Mail, MapPin } from "lucide-react";
-import { company } from "@/lib/companyConfig";
+import { useSettings } from "@/lib/SettingsContext";
 
 export function Footer() {
+  const company = useSettings();
   const currentYear = new Date().getFullYear();
 
   return (

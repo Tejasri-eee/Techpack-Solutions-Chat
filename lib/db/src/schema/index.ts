@@ -21,3 +21,4 @@ export * from "./leads";
 export * from "./products";
 export * from "./orders";
 export * from "./contacts";
+export * from "./settings";

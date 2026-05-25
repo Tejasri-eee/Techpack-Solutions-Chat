@@ -1,8 +1,9 @@
 import { SiWhatsapp } from "react-icons/si";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { company } from "@/lib/companyConfig";
+import { useSettings } from "@/lib/SettingsContext";
 
 export function WhatsAppButton() {
+  const company = useSettings();
   return (
     <div className="fixed bottom-6 left-6 z-50">
       <Tooltip>

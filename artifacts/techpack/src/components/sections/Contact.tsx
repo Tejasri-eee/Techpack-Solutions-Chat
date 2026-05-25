@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptureLead, useGetContacts } from "@workspace/api-client-react";
 import { Mail, Phone, MapPin, Send, User, Briefcase, Clock } from "lucide-react";
-import { company } from "@/lib/companyConfig";
+import { useSettings } from "@/lib/SettingsContext";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -21,6 +21,7 @@ const formSchema = z.object({
 export function Contact() {
   const { toast } = useToast();
   const captureLead = useCaptureLead();
+  const company = useSettings();
   const { data: contacts = [] } = useGetContacts();
 
   const form = useForm<z.infer<typeof formSchema>>({

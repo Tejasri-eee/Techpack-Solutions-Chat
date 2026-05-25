@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
-import { db, contactsTable } from "@workspace/db";
+import { db, contactsTable, settingsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
 import crypto from "crypto";
 
@@ -165,6 +165,42 @@ router.delete("/admin/contacts/:id", requireAdmin, async (req, res): Promise<voi
   await db.delete(contactsTable).where(eq(contactsTable.id, id));
   req.log.info({ contactId: id }, "Contact deleted");
   res.sendStatus(204);
+});
+
+// ── Settings (admin-only) ────────────────────────────────────────────────────
+
+router.get("/admin/settings", requireAdmin, async (_req, res): Promise<void> => {
+  const rows = await db.select().from(settingsTable);
+  const result: Record<string, string> = {};
+  for (const row of rows) {
+    result[row.key] = row.value;
+  }
+  res.json(result);
+});
+
+router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
+  const body = req.body as Record<string, unknown>;
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    res.status(400).json({ error: "Body must be a key-value object" });
+    return;
+  }
+
+  const entries = (Object.entries(body) as [string, unknown][]).filter(
+    (pair): pair is [string, string] => typeof pair[1] === "string"
+  );
+
+  for (const [key, value] of entries) {
+    await db
+      .insert(settingsTable)
+      .values({ key, value })
+      .onConflictDoUpdate({
+        target: settingsTable.key,
+        set: { value, updatedAt: new Date() },
+      });
+  }
+
+  req.log.info({ count: entries.length }, "Settings saved");
+  res.json({ saved: entries.length });
 });
 
 export default router;

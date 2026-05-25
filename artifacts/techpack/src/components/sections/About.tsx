@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, TrendingUp, Users, Package } from "lucide-react";
-import { company } from "@/lib/companyConfig";
+import { useSettings } from "@/lib/SettingsContext";
 
 export function About() {
+  const company = useSettings();
+
   const stats = [
-    { label: "Founded", value: company.stats.foundedYear, icon: TrendingUp },
-    { label: "Active Clients", value: company.stats.clients, icon: Users },
-    { label: "Years Experience", value: company.stats.experience, icon: CheckCircle2 },
-    { label: "Product Lines", value: company.stats.productLines, icon: Package },
+    { label: "Founded", value: company.foundedYear, icon: TrendingUp },
+    { label: "Active Clients", value: company.clients, icon: Users },
+    { label: "Years Experience", value: company.experience, icon: CheckCircle2 },
+    { label: "Product Lines", value: company.productLines, icon: Package },
   ];
 
   return (
@@ -25,7 +27,7 @@ export function About() {
             </h2>
             <div className="space-y-6 text-muted-foreground text-lg leading-relaxed">
               <p>
-                Since {company.stats.foundedYear}, {company.name} has been at the forefront of industrial packing materials. We don't just supply materials — we engineer complete packaging solutions designed for relentless reliability.
+                Since {company.foundedYear}, {company.name} has been at the forefront of industrial packing materials. We don't just supply materials — we engineer complete packaging solutions designed for relentless reliability.
               </p>
               <p>
                 Based in India, we serve ambitious manufacturers looking to scale their throughput without compromising on quality. Our materials are built with precision specifications, tested for extreme conditions, and backed by end-to-end service support.

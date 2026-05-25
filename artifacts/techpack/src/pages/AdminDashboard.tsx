@@ -15,7 +15,8 @@ import {
 import {
   LogOut, Users, Phone, MapPin, Search, RefreshCw, Download,
   ChevronUp, ChevronDown, Package, ShoppingCart,
-  Trash2, Plus, Pencil, ToggleLeft, ToggleRight, Contact,
+  Trash2, Plus, Pencil, ToggleLeft, ToggleRight, Contact, Settings,
+  CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -46,6 +47,20 @@ interface ContactFormState {
   location: string;
 }
 
+interface SettingsFormState {
+  phone: string;
+  whatsappNumber: string;
+  email: string;
+  address: string;
+  city: string;
+  hours: string;
+  tagline: string;
+  foundedYear: string;
+  clients: string;
+  experience: string;
+  productLines: string;
+}
+
 interface AdminContact {
   id: number;
   name: string;
@@ -59,6 +74,11 @@ interface AdminContact {
 
 const emptyProductForm: ProductFormState = { name: "", description: "", category: "", tag: "" };
 const emptyContactForm: ContactFormState = { name: "", role: "", phone: "", email: "", location: "" };
+const emptySettingsForm: SettingsFormState = {
+  phone: "", whatsappNumber: "", email: "", address: "", city: "",
+  hours: "", tagline: "", foundedYear: "", clients: "", experience: "", productLines: "",
+};
+const ADMIN_SETTINGS_KEY = ["admin-settings"];
 
 // ── Module-level components (never recreated on re-render) ───────────────────
 
@@ -181,6 +201,9 @@ export default function AdminDashboard() {
   const [editingContactId, setEditingContactId] = useState<number | null>(null);
   const [editContactForm, setEditContactForm] = useState<ContactFormState>(emptyContactForm);
 
+  const [settingsForm, setSettingsForm] = useState<SettingsFormState>(emptySettingsForm);
+  const [settingsSaveStatus, setSettingsSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
   useEffect(() => {
     if (!sessionStorage.getItem("tp_admin_auth")) setLocation("/admin");
   }, [setLocation]);
@@ -202,6 +225,23 @@ export default function AdminDashboard() {
     enabled: !!sessionStorage.getItem("tp_admin_auth"),
   });
 
+  const { data: settingsData, isLoading: isLoadingSettings } = useQuery<Record<string, string>>({
+    queryKey: ADMIN_SETTINGS_KEY,
+    queryFn: () => adminFetch<Record<string, string>>("/api/admin/settings"),
+    enabled: !!sessionStorage.getItem("tp_admin_auth"),
+  });
+
+  useEffect(() => {
+    if (settingsData) {
+      setSettingsForm((prev) => ({
+        ...prev,
+        ...Object.fromEntries(
+          Object.entries(settingsData).filter(([k]) => k in emptySettingsForm)
+        ) as Partial<SettingsFormState>,
+      }));
+    }
+  }, [settingsData]);
+
   // ── Mutations ──────────────────────────────────────────────────────────────
 
   const { mutate: updateOrderStatus } = useUpdateOrderStatus();
@@ -210,6 +250,24 @@ export default function AdminDashboard() {
   const { mutate: deleteProduct } = useDeleteProduct();
 
   const invalidateContacts = () => queryClient.invalidateQueries({ queryKey: ADMIN_CONTACTS_KEY });
+
+  const saveSettingsMutation = useMutation({
+    mutationFn: (data: SettingsFormState) =>
+      adminFetch<{ saved: number }>("/api/admin/settings", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADMIN_SETTINGS_KEY });
+      queryClient.invalidateQueries({ queryKey: ["company-settings"] });
+      setSettingsSaveStatus("saved");
+      setTimeout(() => setSettingsSaveStatus("idle"), 3000);
+    },
+    onError: () => {
+      setSettingsSaveStatus("error");
+      setTimeout(() => setSettingsSaveStatus("idle"), 3000);
+    },
+  });
 
   const createContactMutation = useMutation({
     mutationFn: (data: ContactFormState) =>
@@ -452,6 +510,9 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="contacts" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">
               <Contact className="w-4 h-4 mr-2" /> Contacts
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400">
+              <Settings className="w-4 h-4 mr-2" /> Settings
             </TabsTrigger>
           </TabsList>
 
@@ -763,6 +824,193 @@ export default function AdminDashboard() {
                 <div className="px-4 py-2.5 border-t border-slate-800 text-xs text-slate-500">
                   {filteredContacts.length} contact{filteredContacts.length !== 1 ? "s" : ""} · {contacts.filter((c) => c.isActive).length} visible on website
                 </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* ── SETTINGS TAB ── */}
+          <TabsContent value="settings">
+            <div className="max-w-2xl mx-auto space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold text-white mb-1">Company Settings</h2>
+                <p className="text-sm text-slate-400">
+                  Changes take effect on the website immediately after saving.
+                </p>
+              </div>
+
+              {isLoadingSettings ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="h-10 rounded-lg bg-slate-800 animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSettingsSaveStatus("saving");
+                    saveSettingsMutation.mutate(settingsForm);
+                  }}
+                  className="space-y-6"
+                >
+                  {/* Contact Info */}
+                  <div className="bg-[#0d1626] border border-slate-800 rounded-xl p-6 space-y-4">
+                    <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+                      Contact Information
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-300 text-xs">Phone Number</Label>
+                        <Input
+                          value={settingsForm.phone}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, phone: e.target.value })}
+                          placeholder="+91 9505341122"
+                          className="bg-[#0a1220] border-slate-700 text-white"
+                        />
+                        <p className="text-xs text-slate-500">Shown in header, footer and contact section</p>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-300 text-xs">WhatsApp Number</Label>
+                        <Input
+                          value={settingsForm.whatsappNumber}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, whatsappNumber: e.target.value })}
+                          placeholder="919505341122"
+                          className="bg-[#0a1220] border-slate-700 text-white"
+                        />
+                        <p className="text-xs text-slate-500">Country code + number, no spaces (e.g. 919505341122)</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-xs">Email Address</Label>
+                      <Input
+                        type="email"
+                        value={settingsForm.email}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, email: e.target.value })}
+                        placeholder="name@company.com"
+                        className="bg-[#0a1220] border-slate-700 text-white"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-xs">Business Hours</Label>
+                      <Input
+                        value={settingsForm.hours}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, hours: e.target.value })}
+                        placeholder="Mon–Sat, 9:00 AM – 6:00 PM"
+                        className="bg-[#0a1220] border-slate-700 text-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="bg-[#0d1626] border border-slate-800 rounded-xl p-6 space-y-4">
+                    <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+                      Office Location
+                    </h3>
+                    <p className="text-xs text-slate-500 -mt-2">Leave blank to hide address from the website.</p>
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-xs">Street Address</Label>
+                      <Input
+                        value={settingsForm.address}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, address: e.target.value })}
+                        placeholder="Plot 45, Industrial Estate, Phase II"
+                        className="bg-[#0a1220] border-slate-700 text-white"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-xs">City / State / PIN</Label>
+                      <Input
+                        value={settingsForm.city}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, city: e.target.value })}
+                        placeholder="Hyderabad, Telangana 500032"
+                        className="bg-[#0a1220] border-slate-700 text-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* About / Stats */}
+                  <div className="bg-[#0d1626] border border-slate-800 rounded-xl p-6 space-y-4">
+                    <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+                      About Section Stats
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-300 text-xs">Founded Year</Label>
+                        <Input
+                          value={settingsForm.foundedYear}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, foundedYear: e.target.value })}
+                          placeholder="2010"
+                          className="bg-[#0a1220] border-slate-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-300 text-xs">Active Clients</Label>
+                        <Input
+                          value={settingsForm.clients}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, clients: e.target.value })}
+                          placeholder="500+"
+                          className="bg-[#0a1220] border-slate-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-300 text-xs">Years Experience</Label>
+                        <Input
+                          value={settingsForm.experience}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, experience: e.target.value })}
+                          placeholder="15+"
+                          className="bg-[#0a1220] border-slate-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-slate-300 text-xs">Product Lines</Label>
+                        <Input
+                          value={settingsForm.productLines}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, productLines: e.target.value })}
+                          placeholder="50+"
+                          className="bg-[#0a1220] border-slate-700 text-white"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="bg-[#0d1626] border border-slate-800 rounded-xl p-6 space-y-4">
+                    <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+                      Footer Tagline
+                    </h3>
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-xs">Tagline</Label>
+                      <Input
+                        value={settingsForm.tagline}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, tagline: e.target.value })}
+                        placeholder="Precision-engineered industrial packing solutions..."
+                        className="bg-[#0a1220] border-slate-700 text-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Save button */}
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm">
+                      {settingsSaveStatus === "saved" && (
+                        <span className="flex items-center gap-1.5 text-green-400">
+                          <CheckCircle2 className="w-4 h-4" /> Settings saved successfully
+                        </span>
+                      )}
+                      {settingsSaveStatus === "error" && (
+                        <span className="flex items-center gap-1.5 text-red-400">
+                          <AlertCircle className="w-4 h-4" /> Failed to save. Please try again.
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      type="submit"
+                      disabled={saveSettingsMutation.isPending}
+                      className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-6"
+                    >
+                      {saveSettingsMutation.isPending ? "Saving…" : "Save Changes"}
+                    </Button>
+                  </div>
+                </form>
               )}
             </div>
           </TabsContent>
