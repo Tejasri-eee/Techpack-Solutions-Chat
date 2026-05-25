@@ -32,15 +32,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API routes
 app.use("/api", router);
 
-// Serve frontend files
+// Serve frontend static files
 app.use(
   express.static(path.join(process.cwd(), "artifacts/techpack/dist/public")),
 );
 
 // React frontend fallback
-app.get("*", (_req, res) => {
+app.get("/*", (_req, res) => {
   res.sendFile(
     path.join(process.cwd(), "artifacts/techpack/dist/public/index.html"),
   );
