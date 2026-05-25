@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, TrendingUp, Users, Package } from "lucide-react";
+import { company } from "@/lib/companyConfig";
 
 export function About() {
   const stats = [
-    { label: "Founded", value: "2010", icon: TrendingUp },
-    { label: "Active Clients", value: "500+", icon: Users },
-    { label: "Years Experience", value: "15+", icon: CheckCircle2 },
-    { label: "Product Lines", value: "50+", icon: Package },
+    { label: "Founded", value: company.stats.foundedYear, icon: TrendingUp },
+    { label: "Active Clients", value: company.stats.clients, icon: Users },
+    { label: "Years Experience", value: company.stats.experience, icon: CheckCircle2 },
+    { label: "Product Lines", value: company.stats.productLines, icon: Package },
   ];
 
   return (
@@ -24,10 +25,10 @@ export function About() {
             </h2>
             <div className="space-y-6 text-muted-foreground text-lg leading-relaxed">
               <p>
-                Since 2010, Techpack Solutions has been at the forefront of industrial automation. We don't just build machines; we engineer entire production ecosystems designed for relentless reliability.
+                Since {company.stats.foundedYear}, {company.name} has been at the forefront of industrial packing materials. We don't just supply materials — we engineer complete packaging solutions designed for relentless reliability.
               </p>
               <p>
-                Based in India, we serve ambitious manufacturers looking to scale their throughput without compromising on precision. Our systems are built with heavy-duty materials, state-of-the-art sensors, and an obsessive attention to detail.
+                Based in India, we serve ambitious manufacturers looking to scale their throughput without compromising on quality. Our materials are built with precision specifications, tested for extreme conditions, and backed by end-to-end service support.
               </p>
             </div>
           </motion.div>
@@ -42,12 +43,17 @@ export function About() {
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
-                <div key={index} className="bg-background border border-border p-6 rounded-xl relative overflow-hidden group hover:border-primary/50 transition-colors">
+                <div
+                  key={index}
+                  className="bg-background border border-border p-6 rounded-xl relative overflow-hidden group hover:border-primary/50 transition-colors"
+                >
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Icon className="w-16 h-16 text-primary" />
                   </div>
                   <div className="relative z-10">
-                    <div className="text-3xl font-bold text-white mb-2 font-mono tracking-tight">{stat.value}</div>
+                    <div className="text-3xl font-bold text-white mb-2 font-mono tracking-tight">
+                      {stat.value}
+                    </div>
                     <div className="text-sm font-medium text-muted-foreground">{stat.label}</div>
                   </div>
                 </div>

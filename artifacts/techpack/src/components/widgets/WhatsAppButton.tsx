@@ -1,5 +1,6 @@
 import { SiWhatsapp } from "react-icons/si";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { company } from "@/lib/companyConfig";
 
 export function WhatsAppButton() {
   return (
@@ -7,7 +8,7 @@ export function WhatsAppButton() {
       <Tooltip>
         <TooltipTrigger asChild>
           <a
-            href="https://wa.me/919876543210"
+            href={`https://wa.me/${company.whatsappNumber}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center h-14 w-14 rounded-full bg-[#25D366] text-white shadow-lg hover:scale-105 transition-transform shadow-[0_4px_15px_rgba(37,211,102,0.3)] hover:shadow-[0_4px_25px_rgba(37,211,102,0.5)]"

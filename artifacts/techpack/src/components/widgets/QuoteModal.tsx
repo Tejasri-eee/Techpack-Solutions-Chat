@@ -58,7 +58,7 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
       }, 2000);
     } catch (error) {
       console.error("Failed to request quote", error);
-      form.setError("root", { message: "Failed to submit quote request. Please try again." });
+      form.setError("root", { message: "Failed to submit. Please try again." });
     }
   };
 
@@ -68,15 +68,15 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
         <DialogHeader>
           <DialogTitle>Request a Quote</DialogTitle>
           <DialogDescription className="text-slate-400">
-            Fill out the form below and we'll get back to you within 24 hours.
+            Fill in your details and our team will get back to you within 24 hours.
           </DialogDescription>
         </DialogHeader>
 
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in zoom-in">
             <CheckCircle2 className="w-12 h-12 text-green-500 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Thank You!</h3>
-            <p className="text-slate-400">We'll contact you within 24 hours.</p>
+            <h3 className="text-xl font-bold mb-2">Request Received!</h3>
+            <p className="text-slate-400">Our team will contact you within 24 hours.</p>
           </div>
         ) : (
           <Form {...form}>
@@ -86,9 +86,9 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
                 name="customerName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name *</FormLabel>
+                    <FormLabel>Your Name *</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" className="bg-[#0a1220] border-slate-700" {...field} />
+                      <Input placeholder="Full name or company" className="bg-[#0a1220] border-slate-700" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,7 +102,7 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
                     <FormItem>
                       <FormLabel>Phone *</FormLabel>
                       <FormControl>
-                        <Input placeholder="+1 234 567 890" className="bg-[#0a1220] border-slate-700" {...field} />
+                        <Input placeholder="+91 XXXXX XXXXX" className="bg-[#0a1220] border-slate-700" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -115,7 +115,7 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
                     <FormItem>
                       <FormLabel>Location *</FormLabel>
                       <FormControl>
-                        <Input placeholder="City, Country" className="bg-[#0a1220] border-slate-700" {...field} />
+                        <Input placeholder="City, State" className="bg-[#0a1220] border-slate-700" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -129,11 +129,11 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
                   <FormItem>
                     <FormLabel>Product</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Select a product" 
-                        readOnly={!!initialProduct} 
-                        className="bg-[#0a1220] border-slate-700" 
-                        {...field} 
+                      <Input
+                        placeholder="Product name or type"
+                        readOnly={!!initialProduct}
+                        className="bg-[#0a1220] border-slate-700"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -160,10 +160,10 @@ export function QuoteModal({ isOpen, onClose, initialProduct }: QuoteModalProps)
                   <FormItem>
                     <FormLabel>Notes (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Any specific requirements..." 
-                        className="bg-[#0a1220] border-slate-700 resize-none" 
-                        {...field} 
+                      <Textarea
+                        placeholder="Any specific requirements or specifications..."
+                        className="bg-[#0a1220] border-slate-700 resize-none"
+                        {...field}
                         value={field.value || ""}
                       />
                     </FormControl>

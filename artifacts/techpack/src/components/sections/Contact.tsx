@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useCaptureLead, useGetContacts } from "@workspace/api-client-react";
-import { Mail, Phone, MapPin, Send, User, Briefcase } from "lucide-react";
+import { Mail, Phone, MapPin, Send, User, Briefcase, Clock } from "lucide-react";
+import { company } from "@/lib/companyConfig";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -62,7 +63,7 @@ export function Contact() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Left — static info */}
+          {/* Left — contact info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -72,7 +73,7 @@ export function Contact() {
               Ready to <span className="text-primary">Upgrade?</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-12 max-w-md">
-              Speak with our engineers to configure the perfect packaging solution for your production line.
+              Speak with our team to configure the perfect packaging solution for your production line.
             </p>
 
             <div className="space-y-8">
@@ -82,8 +83,13 @@ export function Contact() {
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-1">Call Us Directly</h4>
-                  <p className="text-muted-foreground">+91 9505341122</p>
-                  <p className="text-muted-foreground text-sm">Mon-Sat, 9:00 AM - 6:00 PM</p>
+                  <a
+                    href={`tel:${company.phone}`}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {company.phone}
+                  </a>
+                  <p className="text-muted-foreground text-sm mt-0.5">{company.hours}</p>
                 </div>
               </div>
 
@@ -92,22 +98,36 @@ export function Contact() {
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold mb-1">Email Sales</h4>
-                  <p className="text-muted-foreground">rajesh.k@techpacksolutions.co.in</p>
+                  <h4 className="text-white font-semibold mb-1">Email Us</h4>
+                  <a
+                    href={`mailto:${company.email}`}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {company.email}
+                  </a>
                 </div>
               </div>
 
+              {(company.address || company.city) && (
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded bg-card border border-border flex items-center justify-center text-primary shrink-0">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold mb-1">Our Location</h4>
+                    {company.address && <p className="text-muted-foreground">{company.address}</p>}
+                    {company.city && <p className="text-muted-foreground">{company.city}</p>}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded bg-card border border-border flex items-center justify-center text-primary shrink-0">
-                  <MapPin className="w-5 h-5" />
+                  <Clock className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold mb-1">Headquarters</h4>
-                  <p className="text-muted-foreground">
-                    123 Industrial Estate, Phase II
-                    <br />
-                    Mumbai, Maharashtra 400001
-                  </p>
+                  <h4 className="text-white font-semibold mb-1">Business Hours</h4>
+                  <p className="text-muted-foreground">{company.hours}</p>
                 </div>
               </div>
             </div>
@@ -130,7 +150,7 @@ export function Contact() {
                     <FormItem>
                       <FormLabel>Company / Contact Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Acme Manufacturing" {...field} className="bg-background" />
+                        <Input placeholder="Your company or name" {...field} className="bg-background" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -145,7 +165,7 @@ export function Contact() {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input placeholder="contact@company.com" {...field} className="bg-background" />
+                          <Input placeholder="you@company.com" {...field} className="bg-background" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -158,7 +178,7 @@ export function Contact() {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="+91 98765 43210" {...field} className="bg-background" />
+                          <Input placeholder="+91 XXXXX XXXXX" {...field} className="bg-background" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -174,7 +194,7 @@ export function Contact() {
                       <FormLabel>Requirements / Specifications</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about the product you pack, speed required, etc."
+                          placeholder="Tell us about the product you pack, speed required, quantity, etc."
                           className="min-h-[120px] bg-background resize-none"
                           {...field}
                         />
@@ -197,7 +217,7 @@ export function Contact() {
           </motion.div>
         </div>
 
-        {/* ── Company Contacts (read-only, public) ─────────────────────────── */}
+        {/* ── Team Contacts (populated from admin panel) ─────────────────── */}
         {contacts.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -224,7 +244,6 @@ export function Contact() {
                   transition={{ delay: i * 0.06 }}
                   className="bg-card border border-border rounded-xl p-5 hover:border-primary/30 transition-colors"
                 >
-                  {/* Avatar + name */}
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                       <User className="w-5 h-5 text-primary" />
