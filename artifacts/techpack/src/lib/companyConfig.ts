@@ -12,8 +12,9 @@ export const company = {
   email: "rajesh.k@techpacksolutions.co.in",
 
   // Physical address — leave blank to hide from website
-  address: "",  // e.g. "Plot 45, Industrial Estate, Phase II"
-  city: "",     // e.g. "Hyderabad, Telangana 500032"
+  address:
+    "G-2, Plot No. 85, Prashanthi Nagar, Kukatpally, Hyderabad, Telangana - 500072, India", // e.g. "Plot 45, Industrial Estate, Phase II"
+  city: "Hyderabad", // e.g. "Hyderabad, Telangana 500032"
 
   // Business hours shown in contact section
   hours: "Mon–Sat, 9:00 AM – 6:00 PM",

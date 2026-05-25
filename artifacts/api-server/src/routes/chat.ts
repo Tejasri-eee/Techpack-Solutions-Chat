@@ -18,15 +18,16 @@ Your expertise covers:
 Important rules:
 - Keep responses short, professional, and friendly (2-4 sentences max)
 - Never repeat the same question more than once
-- If a product is unavailable, say: "This item is currently out of stock. Please contact our customer care at +91-98765-43210 or email support@techpacksolutions.com for alternatives."
+- - Do NOT ask for machine model or part numbers
+- If a product is unavailable, say: "This item is currently out of stock. Please contact our customer care at +91-9505341122 or email support@techpacksolutions.com for alternatives."
 - After 3+ exchanges, if you haven't collected the customer's contact details, naturally ask: "To better assist you, may I know your name, phone number, and location?"
 - Do not make up prices — say "Please contact us for an accurate quotation tailored to your needs."
-- Always be helpful, never dismissive
+- Always be helpful, never dismissive'
 
 Company info:
 - Name: Techpack Solutions
-- Phone: +91-98765-43210
-- Email: info@techpacksolutions.com
+- Phone: +91-9505341122
+- Email: rajesh.k@techpack.co.in
 - Support: support@techpacksolutions.com
 - WhatsApp: +91-98765-43210
 - Founded: 2010 | 500+ clients | 15+ years experience`;
@@ -54,23 +55,30 @@ router.post("/chat", async (req, res): Promise<void> => {
       { role: "user", content: message },
     ];
 
-    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${groqApiKey}`,
-        "Content-Type": "application/json",
+    const groqRes = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${groqApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama3-8b-8192",
+          messages,
+          max_tokens: 300,
+          temperature: 0.7,
+        }),
       },
-      body: JSON.stringify({
-        model: "llama3-8b-8192",
-        messages,
-        max_tokens: 300,
-        temperature: 0.7,
-      }),
-    });
+    );
 
     if (groqRes.ok) {
-      const data = await groqRes.json() as { choices: Array<{ message: { content: string } }> };
-      const reply = data.choices[0]?.message?.content ?? "I'm having trouble responding right now. Please try again.";
+      const data = (await groqRes.json()) as {
+        choices: Array<{ message: { content: string } }>;
+      };
+      const reply =
+        data.choices[0]?.message?.content ??
+        "I'm having trouble responding right now. Please try again.";
       res.json({ reply });
       return;
     }
@@ -86,7 +94,7 @@ router.post("/chat", async (req, res): Promise<void> => {
     const orRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${openrouterApiKey}`,
+        Authorization: `Bearer ${openrouterApiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": "https://techpacksolutions.com",
         "X-Title": "Techpack Solutions AI",
@@ -99,12 +107,18 @@ router.post("/chat", async (req, res): Promise<void> => {
     });
 
     if (orRes.ok) {
-      const data = await orRes.json() as { choices: Array<{ message: { content: string } }> };
-      const reply = data.choices[0]?.message?.content ?? "I'm having trouble responding right now. Please try again.";
+      const data = (await orRes.json()) as {
+        choices: Array<{ message: { content: string } }>;
+      };
+      const reply =
+        data.choices[0]?.message?.content ??
+        "I'm having trouble responding right now. Please try again.";
       res.json({ reply });
       return;
     }
-    req.log.warn("OpenRouter API call failed, falling back to rule-based response");
+    req.log.warn(
+      "OpenRouter API call failed, falling back to rule-based response",
+    );
   }
 
   // Rule-based fallback when no API key is configured
@@ -116,7 +130,11 @@ router.post("/chat", async (req, res): Promise<void> => {
 function getRuleBasedReply(message: string, historyLength: number): string {
   const lower = message.toLowerCase();
 
-  if (lower.includes("hello") || lower.includes("hi") || lower.includes("hey")) {
+  if (
+    lower.includes("hello") ||
+    lower.includes("hi") ||
+    lower.includes("hey")
+  ) {
     return "Hello! Welcome to Techpack Solutions. I'm here to help you with packing materials, spare parts, quotations, and service support. What can I assist you with today?";
   }
 
@@ -140,23 +158,44 @@ function getRuleBasedReply(message: string, historyLength: number): string {
     return "We stock genuine spare parts for all our machine models — sensors, belts, sealing jaws, cutting blades, and more. Please share your machine model and the part needed, and we'll check availability immediately.";
   }
 
-  if (lower.includes("quot") || lower.includes("price") || lower.includes("cost")) {
+  if (
+    lower.includes("quot") ||
+    lower.includes("price") ||
+    lower.includes("cost")
+  ) {
     return "We'd be happy to provide a customized quotation. Pricing depends on machine type, capacity, and specifications. Please share your requirements and our team will send you a detailed quote within 24 hours.";
   }
 
-  if (lower.includes("complaint") || lower.includes("issue") || lower.includes("problem")) {
+  if (
+    lower.includes("complaint") ||
+    lower.includes("issue") ||
+    lower.includes("problem")
+  ) {
     return "I'm sorry to hear you're experiencing an issue. For urgent support, please call our service line at +91-98765-43210 or email support@techpacksolutions.com. Our technicians are available 24/7 for critical breakdowns.";
   }
 
-  if (lower.includes("service") || lower.includes("maintenance") || lower.includes("amc")) {
+  if (
+    lower.includes("service") ||
+    lower.includes("maintenance") ||
+    lower.includes("amc")
+  ) {
     return "Our Annual Maintenance Contract (AMC) covers preventive maintenance, emergency breakdowns, spare parts discounts, and priority support. We serve clients across India with a team of 50+ certified engineers. Shall I connect you with our service team?";
   }
 
-  if (lower.includes("inventory") || lower.includes("stock") || lower.includes("available")) {
+  if (
+    lower.includes("inventory") ||
+    lower.includes("stock") ||
+    lower.includes("available")
+  ) {
     return "Please share the specific machine model or part number you're looking for. I'll check our current inventory and get back to you. For urgent requirements, call us at +91-98765-43210.";
   }
 
-  if (lower.includes("contact") || lower.includes("phone") || lower.includes("email") || lower.includes("address")) {
+  if (
+    lower.includes("contact") ||
+    lower.includes("phone") ||
+    lower.includes("email") ||
+    lower.includes("address")
+  ) {
     return "You can reach Techpack Solutions at:\n📞 +91-98765-43210\n📧 info@techpacksolutions.com\n🕐 Mon–Sat, 9 AM – 6 PM\nWe're also available on WhatsApp for quick queries.";
   }
 
